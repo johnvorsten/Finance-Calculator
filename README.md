@@ -110,3 +110,11 @@ time_end = max([x.time_start for x in incomes])
 pfc.plot_integral(incomes, time_start, time_end, smooth=False)
 ```
 
+The plotting function outputs a 2D image as well as a 3D image
+![Example 3D](https://github.com/johnvorsten/Finance-Calculator/blob/master/2d%201.png)  
+
+Transactions on a 1-day time period can make the graph appear “Choppy”.  This is especially true for large transactions relative to the current account balance.  
+![Example 3D](https://github.com/johnvorsten/Finance-Calculator/blob/master/3d%202.png)  
+
+This figure shows the “probability” axis of the 3D image.  Income can be projected in the worst case (0 probability) or best case (1 probability).  Different distributions can be input besides a linear distribution.  
+![Example 3D](https://github.com/johnvorsten/Finance-Calculator/blob/master/3d%203.png)  
