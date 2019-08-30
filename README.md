@@ -5,12 +5,14 @@ The goal of this project is to visualize income and expenses.  The output visual
 1.	Their income over time (past and future if desired)
 2.	How income is impacted by best-case and worst-case scenarios
 This project was inspired by an argument with my girlfriend  We were talking about getting engaged!  This was a great topic, except we were arguing about money : I didn’t think we had enough money; she thought we had plenty of money (a story as old as time).  The main point of argument was not about 1) how much we should spend on an engagement ring (although I wanted to spend less), or 2) how much money we have right now.  We argued about how much money we will have in the future.
+
 Our future finances are complicated by a lot of things : 
 1.	Engagement ring
 2.	Wedding expenses
 3.	School if I want to go back to get my masters
 4.	Current and future levels of income
 5.	If I need a new car, health insurance, health issues, feelings of security, putting money in retirement, leisure spending […] etc..
+
 Because we were mostly worried about future spending, I wanted to make a graph to give me an idea of what my future disposable income would actually look like.  Therefore I wanted the following features : 
 1.	Be able to graph past expenses
 2.	Be able to graph future projected expenses
