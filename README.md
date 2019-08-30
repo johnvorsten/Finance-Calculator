@@ -1,7 +1,8 @@
-# Finance-Calculator
-Visualization of incomes and outcomes in a (3) dimensional space
-[[https://github.com/johnvorsten/Finance-Calculator/blob/master/3d.png|alt=octocat]]
-Project Description
+# Finance-Calculator  
+Visualization of incomes and outcomes in a (3) dimensional space 
+
+![Example 3D](https://github.com/johnvorsten/Finance-Calculator/blob/master/3d.png)  
+Project Description  
 The goal of this project is to visualize income and expenses.  The output visualization should give the viewer an understanding of : 
 1.	Their income over time (past and future if desired)
 2.	How income is impacted by best-case and worst-case scenarios
