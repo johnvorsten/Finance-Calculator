@@ -69,7 +69,7 @@ Methods
 4.	Append (extend) custom income objects and imported income objects  
 5.	Pass the objects to the plotting function  
 
-'''
+```
 import Personal_Finance_Calculator as pfc
 from datetime import date
 
@@ -106,5 +106,5 @@ time_end = max([x.time_start for x in incomes])
 
 #Plot the income objects
 pfc.plot_integral(incomes, time_start, time_end, smooth=False)
-'''
+```
 
