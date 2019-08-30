@@ -2,6 +2,8 @@
 """
 Created on Mon Jun  3 15:04:54 2019
 
+
+
 @author: z003vrzk
 """
 
@@ -199,16 +201,18 @@ class Income_Import():
     def __init__(self, path):
         self.tx_df = pd.read_csv(path)
 
-    def create_transaction_objects(self):
+    def create_transaction_objects(self, 
+                                   value_col='Amount',
+                                   date_col='Date'):
         incomes = []
         date_format = r'%m/%d/%Y'
         period = 1/365
         
         for idx, row in self.tx_df.iterrows():
-            income_str = row['Amount']
+            income_str = row[value_col]
             income_str = income_str.replace(',', '')
             income = float(income_str)
-            date_str = row['Date']
+            date_str = row[date_col]
             my_date = datetime.strptime(date_str, date_format) #datetime
             my_date = my_date.date()
             
@@ -218,7 +222,10 @@ class Income_Import():
         
         return incomes
     
-    def categorize_transactions(self, by_year):
+    def categorize_transactions(self, cat_col='Category', 
+                                date_col='Date',
+                                value_col='Amount',
+                                by_year=True):
         """Return a set of categories of expenses and average
         spending on these categories over the timeframe from the imported
         data.
@@ -228,11 +235,11 @@ class Income_Import():
         categories_year : {} dict of category : expense/year.  This is not
             averaged across the whold data period = returns a category for each
             year"""
-        cat_tags = list(set(self.tx_df['Category']))
+        cat_tags = list(set(self.tx_df[cat_col]))
         categories = {}
         categories_year = {}
         
-        _dates = self.tx_df['Date']
+        _dates = self.tx_df[date_col]
         date_format = r'%m/%d/%Y'
         _dates = [datetime.strptime(x, date_format) for x in _dates]
         unique_years = list(set([x.year for x in _dates]))
@@ -240,8 +247,8 @@ class Income_Import():
         
         for cat in cat_tags:
             
-            cat_index = self.tx_df['Category'] == cat
-            cat_vals = self.tx_df.loc[cat_index]['Amount']
+            cat_index = self.tx_df[cat_col] == cat
+            cat_vals = self.tx_df.loc[cat_index][value_col]
             cat_vals = cat_vals.str.replace(',','').astype(float)
             cat_val = cat_vals.sum()
             categories[cat] = cat_val
@@ -253,8 +260,8 @@ class Income_Import():
             
             for cat in cat_tags:
                 
-                cat_index = (self.tx_df['Category'] == cat) & (year_series == year)
-                cat_vals = self.tx_df.loc[cat_index]['Amount']
+                cat_index = (self.tx_df[cat_col] == cat) & (year_series == year)
+                cat_vals = self.tx_df.loc[cat_index][value_col]
                 cat_vals = cat_vals.str.replace(',','').astype(float)
                 cat_val = cat_vals.sum()
                 new_cat = cat + '_' + str(year)
