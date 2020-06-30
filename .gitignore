@@ -1,0 +1,25 @@
+# Cached files
+__pycache__/**
+
+# Pictures
+
+
+# Draw.io files
+*.drawio
+
+# Random Files
+*.csv
+*.xlsx
+
+# Word files
+*.docx
+
+# One note files
+*.onetoc2
+*.one
+OneNote_RecycleBin/**
+
+# Directories
+/Archive/
+/finance-calc-writeup/
+
