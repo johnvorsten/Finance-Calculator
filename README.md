@@ -71,7 +71,7 @@ Methods
 4.	Append (extend) custom income objects and imported income objects  
 5.	Pass the objects to the plotting function  
 
-```
+```python
 import Personal_Finance_Calculator as pfc
 from datetime import date
 
