@@ -5,13 +5,19 @@ Created on Wed Jun 12 19:39:44 2019
 @author: z003vrzk
 """
 
-import Personal_Finance_Calculator as pfc
+# Python imports
 from datetime import date
 
+# Third party imports
+
+# Local imports
+import finance_graphing as pfc
+
+#%%
 """Test Graph"""
 
 #Example income instance
-"""my_income1 = pfc.Income(income1, period1, time_start1, time_end1, 
+"""my_income1 = pfc.Income(income1, period1, time_start1, time_end1,
                    best_case=best_in1, worst_case=worst_in1)"""
 
 #Create income instances
@@ -29,7 +35,7 @@ inc6=pfc.Income(-12500,365/365,date(2023, 6, 5),date(2025, 6, 5),
                 best_case=-10000,worst_case=-15000) #school
 
 #Import bank .csv
-path = r'Transaction_Data.csv'
+path = r'../finance-calc-writeup/Transaction_Data.csv'
 income_importer = pfc.Income_Import(path)
 incomes_auto = income_importer.create_transaction_objects()
 
