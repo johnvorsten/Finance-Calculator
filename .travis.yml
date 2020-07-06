@@ -1,3 +1,20 @@
+# 2020-7-5
 
+language: python
+
+# Command to run tests
+script:
+    - python ./finance-graph/finance_graphing_test.py
+
+python:
+    - "3.6"
+    - "3.7"
+
+install:
+    - pip install numpy
+    - pip install scikit-learn
+    - pip install pandas
+    - pip install matplotlib
+    - pip install scipy
 
 

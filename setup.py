@@ -36,5 +36,6 @@ setuptools.setup(
     install_requires=['scikit-learn>=0.23.1',
                       'scipy',
                       'matplotlib',
-                      'pandas']
+                      'pandas',
+                      'numpy']
 )
