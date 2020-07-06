@@ -121,36 +121,23 @@ Income instances can either be incomes or expenses. Enter a negative number
 for expenses or a positive number for income
 """
 
-# Basic income - $60,000 to $40,000 per year
-INC1 = Income(20000*0.7, 365/365, datetime.date(2019,6,5), datetime.date(2023,6,5),
+# Basic income
+INC1 = Income(40000*0.7, 365/365, datetime.date(2019,6,5), datetime.date(2023,6,5),
                 best_case=40000*0.7, worst_case=20000*0.7) #Income
 
 # Single expense of $4,000, best $3,000 worst $5,000
 INC2 = Income(-4000, 1/365,datetime.date(2019,10,1),datetime.date(2020,10,1),
                 best_case=-3000, worst_case=-5000, one_time=True)
 
-# Single expense of $7,500
-INC3 = Income(-7500,1/365,datetime.date(2021,10,20),datetime.date(2021,10,20),
-                one_time=True)
-
 # Monthly expense of $2,000
-INC4 = Income(-2000,31/365, datetime.date(2019,6,5), datetime.date(2025,6,5),
+INC3 = Income(-2000,31/365, datetime.date(2019,6,5), datetime.date(2025,6,5),
                 best_case=-1800, worst_case=-2100, one_time=True)
 
-# Other income bi-weekly
-INC5 = Income(450, 14/365, datetime.date(2019, 6, 5), datetime.date(2025, 6, 5),
-                best_case=500, worst_case=440)
-
-# Single expense of $12,500 yearly over two years ($25,000 total expense)
-# Range from $10,000 to $15,000 expense
-INC6 = Income(-12500, 365/365, datetime.date(2023,6,5), datetime.date(2025,6,5),
-                best_case=-10000,worst_case=-15000)
 
 # Generate some random transaction values
 _transactions1 = np.random.normal(loc=-30, scale=50, size=(100))
-_transactions2 = np.random.normal(loc=1000, scale=300, size=(5))
 _transactions3 = np.random.normal(loc=-1000, scale=300, size=(25))
-_transactions = np.concatenate((_transactions1,_transactions2,_transactions3))
+_transactions = np.concatenate((_transactions1, _transactions3))
 incomes_auto = []
 _days = np.linspace(1,28,28, dtype=np.int16)
 _months = np.linspace(1,12,12,dtype=np.int16)
@@ -161,7 +148,7 @@ for _val in _transactions:
     incomes_auto.append(Income(float(_val), 1/365,datetime.date(_year,_month,_day),None,one_time=True))
 
 # Create an iterable of income objects
-incomes = [INC1,INC2,INC3,INC4,INC5,INC6]
+incomes = [INC1,INC2,INC3]
 incomes.extend(incomes_auto)
 # Define your plotting period
 start_date = min([x.start_date for x in incomes])
