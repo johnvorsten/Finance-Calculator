@@ -59,14 +59,14 @@ incomes = [INC1, INC2,INC3,INC4,INC5,INC6]
 incomes.extend(incomes_auto)
 # Define your plotting period
 start_date = min([x.start_date for x in incomes])
-end_date = datetime.date(2020,5,1)
+end_date = datetime.date(2020,2,1)
 
 # Calculate gradients and values
 gradients, values = calculate_gradients(incomes, start_date, end_date)
 
 #Plot the income objects
-# plot_integral(values, start_date, end_date, smooth=True, smooth_type='LSQ-bspline')
-plot_integral(values, start_date, end_date, smooth=True, smooth_type='bv-bspline')
+plot_integral(values, start_date, end_date, smooth=True, smooth_type='LSQ-bspline')
+# plot_integral(values, start_date, end_date, smooth=True, smooth_type='bv-bspline')
 # plot_integral(values, start_date, end_date, smooth=True, smooth_type='Smooth-bspline')
 # plot_integral(values, start_date, end_date, smooth=True, smooth_type='wiener')
 
@@ -122,8 +122,8 @@ for expenses or a positive number for income
 """
 
 # Basic income - $60,000 to $40,000 per year
-INC1 = Income(60000*0.7, 365/365, datetime.date(2019,6,5), datetime.date(2023,6,5),
-                best_case=60000*0.7, worst_case=40000*0.7) #Income
+INC1 = Income(20000*0.7, 365/365, datetime.date(2019,6,5), datetime.date(2023,6,5),
+                best_case=40000*0.7, worst_case=20000*0.7) #Income
 
 # Single expense of $4,000, best $3,000 worst $5,000
 INC2 = Income(-4000, 1/365,datetime.date(2019,10,1),datetime.date(2020,10,1),
@@ -147,9 +147,9 @@ INC6 = Income(-12500, 365/365, datetime.date(2023,6,5), datetime.date(2025,6,5),
                 best_case=-10000,worst_case=-15000)
 
 # Generate some random transaction values
-_transactions1 = np.random.normal(loc=-30, scale=50, size=(1000))
+_transactions1 = np.random.normal(loc=-30, scale=50, size=(100))
 _transactions2 = np.random.normal(loc=1000, scale=300, size=(5))
-_transactions3 = np.random.normal(loc=-1000, scale=300, size=(10))
+_transactions3 = np.random.normal(loc=-1000, scale=300, size=(25))
 _transactions = np.concatenate((_transactions1,_transactions2,_transactions3))
 incomes_auto = []
 _days = np.linspace(1,28,28, dtype=np.int16)

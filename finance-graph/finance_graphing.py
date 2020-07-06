@@ -31,24 +31,42 @@ class Income():
                  worst_case=None, probability=None, one_time=False):
         """Inputs
         -------
-        income : income you expect - define this per-period
-        period : the time over you receive income. Format days/(365 days)
-        time_start : start time for receiving this income (datetime.date object)
-        time_end : end time for receiving this income (datetime.date object)
-        best_case : best case income/expense scenario. income = best_case if
-            best_case is defined.
-        worst_case : worst case income/expense scenario
-        probability : (list | np.array) probability distribution between best
-            and worst case.
+        income : (float/int) income you expect - define this per-period
+        period : (float) the time over you receive income. Format days/(365 days)
+        time_start : (datetime.date) start time for receiving this income
+        time_end : (datetime.date) end time for receiving this income
+        best_case : (float/int) best case income/expense scenario.
+            income = best_case if best_case is defined.
+        worst_case : (float/int) worst case income/expense scenario
+        probability : (list | np.array | iterable) probability distribution
+            between best and worst case.
             Type list or np.array of shape (11,). Structure [1,p(n-1)..0].
             Use this parameter to give the graph a different shape (risk distribution)
             If best_case is defined and proba=None,
             proba will be a liner gradient between [1 ... 0].
             Try np.linspace(0,1,num=11)
-        one_time : if this is a one_time expense/income. In this case use
-            time_start to signify the date of expense
-        tax : enable tax calculation for income source
-        effective_tax_rate : your effective tax rate"""
+        one_time : (bool) if this is a one_time expense/income.
+            In this case use time_start to signify the date of expense"""
+
+        # Types
+        msg='Dates must be passed as datetime.date, got {}'
+        assert isinstance(start_date, datetime.date), msg.format(start_date)
+        assert isinstance(start_date, datetime.date), msg.format(end_date)
+
+        days = period * 365
+        error_msg_days = 'Enter a period greater than 1/365 and less than 365/365'
+        error_msg_type = 'Income must be int or float type'
+        assert (days >= 1 and days <= 365) is True, error_msg_days
+        assert (type(income)==int or type(income)==float), error_msg_type
+
+        income_msg='Income must be type int or float, got {}'
+        assert type(income) in [int, float], income_msg.format(type(income))
+        if not best_case is None:
+            msg='best_case worst_case must be type int or float, got {}'
+            assert type(best_case) in [int, float], msg.format(type(best_case))
+        if not worst_case is None:
+            msg='best_case worst_case must be type int or float, got {}'
+            assert type(worst_case) in [int, float], msg.format(type(worst_case))
 
         # Keep track of base income
         self.income = income
@@ -61,13 +79,6 @@ class Income():
         else:
             self.best_case = income
             self.worst_case = income
-
-
-        days = period * 365
-        error_msg_days = 'Enter a period greater than 1/365 and less than 365/365'
-        error_msg_type = 'Income must be int or float type'
-        assert (days >= 1 and days <= 365) is True, error_msg_days
-        assert (type(income)==int or type(income)==float), error_msg_type
 
         # Handle dates
         if start_date == end_date:
@@ -147,7 +158,12 @@ def calculate_gradients(incomes, start_date, end_date):
         then the income object will not appear in the resulting net worth
     end_date : (datetime.date) ending date to calculate gradients from
         income objects. If the date of an income is later than end_date,
-        then the income object will not appear in the resulting net worth"""
+        then the income object will not appear in the resulting net worth
+    outputs
+    -------
+    gradients : (np.array) Derivative of cumulative worth distribution over
+        start_date to end_date
+    values : (np.array) Cumulative worth distribution over start_date to end_date"""
 
     # Check income objects
     lengths = []
@@ -302,12 +318,15 @@ def value_label_formatter(x, pos):
 def plot_integral(values, start_date, end_date,
                   smooth=True, smooth_type='LSQ-bspline'):
     """
+    Plot cumulative net worth values over time
     inputs
     -------
-    incomes : (list) of Income objects
-    start_date : (datetime.date)
-    end_date : (datetime.date)
-    smooth : (bool)
+    values : (np.array) of cumulative net worth over time. See calculate_gradients()
+    start_date : (datetime.date) Start date of plotting
+        This MUST be the same start_date used to calculate values
+    end_date : (datetime.date) end date of plotting
+        This MUST be the same end_date used to calculate values
+    smooth : (bool) Apply smoothing to the 3D graph surface
     smooth_type : (str) one of ['bv-bspline','LSQ-bspline','Smooth-bspline',
         'wiener']. The smoothing method to apply to the 3-d surface
     outputs

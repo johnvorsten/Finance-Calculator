@@ -6,108 +6,124 @@ Project Description
 The goal of this project is to visualize income and expenses.  The output visualization should give the viewer an understanding of : 
 1.	Their income over time (past and future if desired)
 2.	How income is impacted by best-case and worst-case scenarios
-This project was inspired by an argument with my girlfriend  We were talking about getting engaged!  This was a great topic, except we were arguing about money : I didn’t think we had enough money; she thought we had plenty of money (a story as old as time).  The main point of argument was not about 1) how much we should spend on an engagement ring (although I wanted to spend less), or 2) how much money we have right now.  We argued about how much money we will have in the future.
+This project was inspired by a discussion about finances.  How much money do I have to spend, not only now, but at future dates?
 
-Our future finances are complicated by a lot of things : 
-1.	Engagement ring  
-2.	Wedding expenses  
-3.	School if I want to go back to get my masters  
-4.	Current and future levels of income  
-5.	If I need a new car, health insurance, health issues, feelings of security, putting money in retirement, leisure spending […] etc..  
+Free cash is complicated by : 
+1.	Current and future levels of income  
+2.  Current and future expenses
+3.  Uncertainty of future expenses - Will my car break down?
 
-Because we were mostly worried about future spending, I wanted to make a graph to give me an idea of what my future disposable income would actually look like.  Therefore I wanted the following features :   
-1.	Be able to graph past expenses  
-2.	Be able to graph future projected expenses  
-a.	Graph future expenses with a level of uncertainty.  I should be able to give best case and worst case scenarios AKA if a wedding costs $12,000 or $17,000 (or if school is $15,000  a year or $25,000 a year).  This will be the third axis – probability (the other axes will be time and money)  
-3.	Be intuitive to create new incomes/expenses  
-4.	Gracefully handle one-time incomes and continuous incomes  
-5.	Look presentation-worthy  
-6.	Be able to parse historical data – aka take in a spreadsheet of historical bank transactions to make historical graphing easy  
+What will future disposable income look like. This package has the following features : 
+1.	Consider past expenses  
+2.	Consider future projected expenses and incomes
+a.	Graph future expenses with a level of uncertainty. This will be the third axis – probability 
+3.	Look presentation-worthy  
+4.	Be able to parse historical data – aka take in a spreadsheet of historical bank transactions to make historical graphing easy  
 
 
-Knowing this, lets get started.
+## Core functions and classes 
 
-# Core Modules  
-My code is broken into three core modules : (2) classes and (1) plotting function.
-
-## Income Class  
-### Income(income, period, time_start, time_end, best_case=None, worst_case=None, proba=None, one_time=False, tax=False, effective_tax_rate=0.2)   
-The income class models cash inflow and outflow.  I will call a cash inflow or outflow a transaction for simplicity.  The class can handle transactions that occur over time (yearly incomes), or at one time (single purchases).  It optionally accepts a probability matrix for projecting worst/best case scenarios and supports taxes for incomes. 
+## Income(income, period, start_date, end_date, best_case=None, worst_case=None, probability=None, one_time=False)   
+The income class models cash incomes and expenses. The class can handle transactions that occur over time (yearly incomes), or at one time (single purchases).  It optionally accepts a probability matrix for projecting worst/best case scenarios.
 
 Parameters  
-•	income : Transaction value you expect - define this per-period  
-•	period : the time over the transaction happens. Format days/(365 days).  Example, for monthly rent input 30.5 / 365  
-•	time_start : start time for transaction (datetime.date object)  
-•	time_end : end time for transaction (datetime.date object)  
-•	best_case : best case transaction value scenario. income = best_case if best_case is defined.  
-•	worst_case : worst case transaction value scenario  
-•	proba : probability distribution between best and worst case. Type list or np.array of shape (10,). Structure [1, p(n-1) .. 0]. Intended to give the graph a different shape. If best_case is defined and proba=None, proba will be a linear gradient between [1 ... 0].  Try np.linspace(0,1,num=11)  
-•	one_time : if this is a one_time expense/income. In this case use time_start to signify the date of expense.  If one_time = True, then only time_start will be used in the run() method  
-•	tax : enable tax calculation for income source.  Uses effective_tax_rate to define a percentage.  If you want to inflate expenses by a certain percent, use a negative value (ex -0.08 for 8% sales tax).  The user should calculate other non-tax factors (401K, IRA, savings plans, other payments etc.) before using this class for typical earned income.  
-•	effective_tax_rate : your effective tax rate (default 20%)  
-#### Methods  
-#### Income.run(run_time)  
-•	returns a gradient across proba which defines the expected transaction value during a single day.  This method is called by the plotting function across a range of days (explained later).  The income class methods should not need to be called by the user except for troubleshooting or verification.  The primary job of this method is to return the income gradient if it is called within the class instances defined income period, or 0 if it is called outside of its time period.
-#### Income. calc_derivative (run_time)  
-•	called by the run() method.  It uses a start date and end date to find the income gradient across a time.  The result is returned to run(), which is the expected transaction value during a single day.  
+* income : (float/int) income you expect - define this per-period
+* period : (float) the time over you receive income. Format days/(365 days)
+* time_start : (datetime.date) start time for receiving this income
+* time_end : (datetime.date) end time for receiving this income
+* best_case : (float/int) best case income/expense scenario.
+    income = best_case if best_case is defined.
+* worst_case : (float/int) worst case income/expense scenario
+* probability : (list | np.array | iterable) probability distribution
+    between best and worst case.
+    Type list or np.array of shape (11,). Structure [1,p(n-1)..0].
+    Use this parameter to give the graph a different shape (risk distribution)
+    If best_case is defined and proba=None,
+    proba will be a liner gradient between [1 ... 0].
+    Try np.linspace(0,1,num=11)
+* one_time : (bool) if this is a one_time expense/income.
+    In this case use time_start to signify the date of expense 
 
-## Income_Import Class  
-### Income(path)  
-Parameters  
-•	path: Directory to a csv file. Python will import the .csv file into a pandas dataframe and perform counting operations based on this data  
-The income_Import class is useful for importing transactions from bank statements or ledgers.  This class will also average transaction “types” or “categories” based on bank statements.  This is useful for projecting future expenses based on past actual transactions.
-Methods  
-#### Income_Import. create_transaction_objects(value_col=’Amount’, date_col=’Date’)
-•	Creates Income class instances based on the file passed to the class initializer.  The required rows of the bank records .csv file are <value_col> and <date_col>.  These columns should hold the transaction amounts, and transaction dates for each transaction.  The output is a list (iterable) of income classes. This is useful for passing to the plotting function.  The plotting function will iterate over these income classes, and plot their contributions to (+) or (-) cash flow.  
+## calculate_gradients(incomes, start_date, end_date)
+Calculate the gradients from incomes and integrate the gradients from incomes to net worth
 
-#### Income_Import. categorize_transactions (cat_col='Category', date_col='Date',  by_year=True)  
-•	Outputs a dictionary of {category : value} based on the .csv file passed to the class initializer.  The required rows of the bank records .csv file are <cat_col>, <value_col>, and <date_col>.  <cat_col> is a column describing each transaction instances category (many banks export this information).  <value_col> again is the transaction amount. <date_col> is the transaction date.  The optional parameter by_year indicates if the user wants transactions categorized by year, or over the entire period in the .csv file.  This might be useful for more accurately projecting future expenses.  
+Parameters
+* incomes : (iterable) of income objects
+* start_date : (datetime.date) beginning date to calculate gradients from
+    income objects. If the date of an income is earlier than start_date,
+    then the income object will not appear in the resulting net worth
+* end_date : (datetime.date) ending date to calculate gradients from
+    income objects. If the date of an income is later than end_date,
+    then the income object will not appear in the resulting net worth
+
+outputs
+* gradients : (np.array) Derivative of cumulative worth distribution over 
+    start_date to end_date
+* values : (np.array) Cumulative worth distribution over start_date to end_date
+
+## plot_integral(values, start_date, end_date, smooth=True, smooth_type='LSQ-bspline')
+Plot cumulative net worth values over time
+
+Parameters
+* values : (np.array) of cumulative net worth over time. See calculate_gradients()
+* start_date : (datetime.date) Start date of plotting
+    This MUST be the same start_date used to calculate values
+* end_date : (datetime.date) end date of plotting
+    This MUST be the same end_date used to calculate values
+* smooth : (bool) Apply smoothing to the 3D graph surface
+* smooth_type : (str) one of ['bv-bspline','LSQ-bspline','Smooth-bspline',
+    'wiener']. The smoothing method to apply to the 3-d surface
+    
+Outputs
+* Graph (2D and 3D)
 
 ## Usage Example
 
-1.	Create custom income objects.  
-2.	Import bank transaction .csv file  
-3.	Create income objects from bank transactions  
-4.	Append (extend) custom income objects and imported income objects  
-5.	Pass the objects to the plotting function  
+1.	Create income objects.  
+2.	(Optional) Import bank transaction .csv file  
+3.	Calculate net worth gradient
+4.  Graph net worth values 
 
 ```python
-import Personal_Finance_Calculator as pfc
-from datetime import date
+# Basic income - $60,000 to $40,000 per year
+INC1 = Income(60000*0.7, 365/365, datetime.date(2019,6,5), datetime.date(2023,6,5), best_case=60000*0.7, worst_case=40000*0.7) #Income
 
-"""Test Graph"""
+# Single expense of $4,000, best $3,000 worst $5,000
+INC2 = Income(-4000, 1/365,datetime.date(2019,10,1),datetime.date(2020,10,1), best_case=-3000, worst_case=-5000, one_time=True)
 
-#Example income instance
-"""my_income1 = pfc.Income(income1, period1, time_start1, time_end1, 
-                   best_case=best_in1, worst_case=worst_in1)"""
+# Single expense of $7,500
+INC3 = Income(-7500,1/365,datetime.date(2021,10,20),datetime.date(2021,10,20), one_time=True)
 
-#Create income instances
-inc1=pfc.Income(59000*0.8,365/365,date(2019,6,5),date(2023,6,5),
-                best_case=68000*0.84,worst_case=32000*0.8, tax=True) #Income
-inc2=pfc.Income(-4500,1/365,date(2020,4,1),date(2020,4,1),
-                best_case=-3800,worst_case=-10000,one_time=True) #Ring
-inc3=pfc.Income(-7500,1/365,date(2022,2,20),date(2022,2,20),
-                best_case=-6800,worst_case=-15000,one_time=True) #wedding
-inc4=pfc.Income(-2000,31/365,date(2019,6,5),date(2025,6,5),
-                best_case=-1800,worst_case=-2100,one_time=True) #General Expenses
-inc5=pfc.Income(450,15/365,date(2019, 6, 5),date(2025, 6, 5),
-                best_case=500,worst_case=440) #Other Income
-inc6=pfc.Income(-12500,365/365,date(2023, 6, 5),date(2025, 6, 5),
-                best_case=-10000,worst_case=-15000) #school
+# Monthly expense of $2,000
+INC4 = Income(-2000,31/365, datetime.date(2019,6,5), datetime.date(2025,6,5), best_case=-1800, worst_case=-2100, one_time=True)
 
-#Import bank .csv
-path = r'Transaction_Data.csv'
-income_importer = pfc.Income_Import(path)
-incomes_auto = income_importer.create_transaction_objects()
+# Other income bi-weekly
+INC5 = Income(450, 14/365, datetime.date(2019, 6, 5), datetime.date(2025, 6, 5), best_case=500, worst_case=440)
 
-incomes = [inc1, inc2,inc3,inc4,inc5,inc6]
+# Single expense of $12,500 yearly over two years ($25,000 total expense)
+# Range from $10,000 to $15,000 expense
+INC6 = Income(-12500, 365/365, datetime.date(2023,6,5), datetime.date(2025,6,5), best_case=-10000,worst_case=-15000)
+
+# Import bank transactions .csv for projection of daily expenses
+path = r'../path_to/Transaction_Data.csv'
+transaction_dataframe = pd.read_csv(path)
+incomes_auto = create_transaction_objects(transaction_dataframe, value_col='Amount',date_col='Date')
+
+# Create an iterable of income objects
+incomes = [INC1, INC2,INC3,INC4,INC5,INC6]
 incomes.extend(incomes_auto)
-#Define your plotting period
-time_start = min([x.time_start for x in incomes])
-time_end = max([x.time_start for x in incomes])
+# Define your plotting period
+start_date = min([x.start_date for x in incomes])
+end_date = datetime.date(2020,2,1)
+
+# Calculate gradients and values
+gradients, values = calculate_gradients(incomes, start_date, end_date)
 
 #Plot the income objects
-pfc.plot_integral(incomes, time_start, time_end, smooth=False)
+plot_integral(values, start_date, end_date, smooth=True, smooth_type='LSQ-bspline')
+# plot_integral(values, start_date, end_date, smooth=True, smooth_type='bv-bspline')
+# plot_integral(values, start_date, end_date, smooth=True, smooth_type='Smooth-bspline')
+# plot_integral(values, start_date, end_date, smooth=True, smooth_type='wiener')
 ```
 
 The plotting function outputs a 2D image as well as a 3D image
