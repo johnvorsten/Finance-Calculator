@@ -23,7 +23,7 @@ a.	Graph future expenses with a level of uncertainty. This will be the third axi
 
 ## Core functions and classes 
 
-## Income(income, period, start_date, end_date, best_case=None, worst_case=None, probability=None, one_time=False)   
+### Income(income, period, start_date, end_date, best_case=None, worst_case=None, probability=None, one_time=False)   
 The income class models cash incomes and expenses. The class can handle transactions that occur over time (yearly incomes), or at one time (single purchases).  It optionally accepts a probability matrix for projecting worst/best case scenarios.
 
 Parameters  
@@ -44,7 +44,7 @@ Parameters
 * one_time : (bool) if this is a one_time expense/income.
     In this case use time_start to signify the date of expense 
 
-## calculate_gradients(incomes, start_date, end_date)
+### calculate_gradients(incomes, start_date, end_date)
 Calculate the gradients from incomes and integrate the gradients from incomes to net worth
 
 Parameters
@@ -61,7 +61,7 @@ outputs
     start_date to end_date
 * values : (np.array) Cumulative worth distribution over start_date to end_date
 
-## plot_integral(values, start_date, end_date, smooth=True, smooth_type='LSQ-bspline')
+### plot_integral(values, start_date, end_date, smooth=True, smooth_type='LSQ-bspline')
 Plot cumulative net worth values over time
 
 Parameters
@@ -73,7 +73,7 @@ Parameters
 * smooth : (bool) Apply smoothing to the 3D graph surface
 * smooth_type : (str) one of ['bv-bspline','LSQ-bspline','Smooth-bspline',
     'wiener']. The smoothing method to apply to the 3-d surface
-    
+
 Outputs
 * Graph (2D and 3D)
 
