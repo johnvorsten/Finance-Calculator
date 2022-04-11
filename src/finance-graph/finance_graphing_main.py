@@ -15,6 +15,8 @@ import numpy as np
 from finance_graphing import (create_transaction_objects, Income,
                               plot_integral, calculate_gradients)
 
+# Declarations
+
 #%% Graphing
 
 """Creating income instances

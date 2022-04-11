@@ -2,8 +2,6 @@
 """
 Created on Mon Jun  3 15:04:54 2019
 
-
-
 @author: z003vrzk
 """
 # Python imports
@@ -20,7 +18,7 @@ import pandas as pd
 
 # Local imports
 
-
+# Declarations
 
 #%%
 
@@ -31,21 +29,21 @@ class Income():
                  worst_case=None, probability=None, one_time=False):
         """Inputs
         -------
-        income : (float/int) income you expect - define this per-period
-        period : (float) the time over you receive income. Format days/(365 days)
-        time_start : (datetime.date) start time for receiving this income
-        time_end : (datetime.date) end time for receiving this income
-        best_case : (float/int) best case income/expense scenario.
+        income: (float/int) income you expect - define this per-period
+        period: (float) the time over you receive income. Format days/(365 days)
+        time_start: (datetime.date) start time for receiving this income
+        time_end: (datetime.date) end time for receiving this income
+        best_case: (float/int) best case income/expense scenario.
             income = best_case if best_case is defined.
-        worst_case : (float/int) worst case income/expense scenario
-        probability : (list | np.array | iterable) probability distribution
+        worst_case: (float/int) worst case income/expense scenario
+        probability: (list | np.array | iterable) probability distribution
             between best and worst case.
             Type list or np.array of shape (11,). Structure [1,p(n-1)..0].
             Use this parameter to give the graph a different shape (risk distribution)
             If best_case is defined and proba=None,
             proba will be a liner gradient between [1 ... 0].
             Try np.linspace(0,1,num=11)
-        one_time : (bool) if this is a one_time expense/income.
+        one_time: (bool) if this is a one_time expense/income.
             In this case use time_start to signify the date of expense"""
 
         # Types
@@ -111,13 +109,13 @@ class Income():
         """
         inputs
         -------
-        run_time : (datetime.timedelta) period you want to know derivative.
+        run_time: (datetime.timedelta) period you want to know derivative.
         If not between self.time_start and self.time_end return 0
 
             Return the derivative for the time period specified.
         The period is by day by default.  Integrating is the job of
         a different class creating the graph
-        run_time : """
+        run_time: """
 
         if (run_time > self.end_date or run_time < self.start_date):
             return 0
@@ -152,18 +150,18 @@ def calculate_gradients(incomes, start_date, end_date):
 
     inputs
     -------
-    incomes : (iterable) of income objects
-    start_date : (datetime.date) beginning date to calculate gradients from
+    incomes: (iterable) of income objects
+    start_date: (datetime.date) beginning date to calculate gradients from
         income objects. If the date of an income is earlier than start_date,
         then the income object will not appear in the resulting net worth
-    end_date : (datetime.date) ending date to calculate gradients from
+    end_date: (datetime.date) ending date to calculate gradients from
         income objects. If the date of an income is later than end_date,
         then the income object will not appear in the resulting net worth
     outputs
     -------
-    gradients : (np.array) Derivative of cumulative worth distribution over
+    gradients: (np.array) Derivative of cumulative worth distribution over
         start_date to end_date
-    values : (np.array) Cumulative worth distribution over start_date to end_date"""
+    values: (np.array) Cumulative worth distribution over start_date to end_date"""
 
     # Check income objects
     lengths = []
@@ -221,6 +219,9 @@ def calculate_gradients(incomes, start_date, end_date):
 
 
 class RotateTickLabel:
+    """An event handler which subscribes to the 'draw_event' of a figure
+    Rotate axis labels every time the figures draw event is called"""
+
     def __init__(self, axis, axes):
         """
         Rotate a set of axis labels relative to the axis
@@ -228,24 +229,26 @@ class RotateTickLabel:
         be redrawn
         inputs
         -------
-        axis : (mpl_toolkits.mplot3d.axis3d.Axis) This is the Axis object
+        axis: (mpl_toolkits.mplot3d.axis3d.Axis) This is the Axis object
             you want to rotate tick labels to. It is NOT the AXES object -
             see the plot example for what to pass
-        axes : (mpl_toolkits.mplot3d.axes3d.Axes3D) This is the Axes object
+        axes: (mpl_toolkits.mplot3d.axes3d.Axes3D) This is the Axes object
             that is probably a subplot of a figure. See the plot
             example below for arguments to pass"""
         self.axis = axis
         self.axes = axes
         self.cid = axes.figure.canvas.mpl_connect('draw_event', self)
+        return None
 
     def __call__(self, event):
         self.set_axis_label_rotate(event)
+        return None
 
     def set_axis_label_rotate(self, event):
         """Rotate a set of axis labels relative to the axis
         inputs
         -------
-        event : (matplotlib.backend_bases.DrawEvent)
+        event: (matplotlib.backend_bases.DrawEvent)
         https://matplotlib.org/3.2.2/api/backend_bases_api.html#matplotlib.backend_bases.DrawEvent"""
 
         # Setup
@@ -269,12 +272,12 @@ class RotateTickLabel:
         pep = proj3d.proj_trans_points([edgep1, edgep2], renderer.M)
 
         # Draw labels
-        # The transAxes transform is used because the Text object
-        # rotates the text relative to the display coordinate system.
-        # Therefore, if we want the labels to remain parallel to the
-        # axis regardless of the aspect ratio, we need to convert the
-        # edge points of the plane to display coordinates and calculate
-        # an angle from that.
+        """The transAxes transform is used because the Text object
+        rotates the text relative to the display coordinate system.
+        Therefore, if we want the labels to remain parallel to the
+        axis regardless of the aspect ratio, we need to convert the
+        edge points of the plane to display coordinates and calculate
+        an angle from that."""
         peparray = np.asanyarray(pep)
         dx, dy = (axes.axes.transAxes.transform([peparray[0:2, 1]]) -
                   axes.axes.transAxes.transform([peparray[0:2, 0]]))[0]
@@ -295,8 +298,8 @@ def spline_smoothing_factor(size):
 def value_label_formatter(x, pos):
     """Inputs
     -------
-    x : (float) value of tick label
-    pos : () position of tick label
+    x: (float) value of tick label
+    pos: () position of tick label
     outputs
     -------
     (str) formatted tick label"""
@@ -321,13 +324,13 @@ def plot_integral(values, start_date, end_date,
     Plot cumulative net worth values over time
     inputs
     -------
-    values : (np.array) of cumulative net worth over time. See calculate_gradients()
-    start_date : (datetime.date) Start date of plotting
+    values: (np.array) of cumulative net worth over time. See calculate_gradients()
+    start_date: (datetime.date) Start date of plotting
         This MUST be the same start_date used to calculate values
-    end_date : (datetime.date) end date of plotting
+    end_date: (datetime.date) end date of plotting
         This MUST be the same end_date used to calculate values
-    smooth : (bool) Apply smoothing to the 3D graph surface
-    smooth_type : (str) one of ['bv-bspline','LSQ-bspline','Smooth-bspline',
+    smooth: (bool) Apply smoothing to the 3D graph surface
+    smooth_type: (str) one of ['bv-bspline','LSQ-bspline','Smooth-bspline',
         'wiener']. The smoothing method to apply to the 3-d surface
     outputs
     -------
@@ -486,7 +489,7 @@ def create_transaction_objects(transactions_dataframe,
     """
     inputs
     -------
-    transactions_dataframe : (pandas.DataFrame) of transaction records. Each
+    transactions_dataframe: (pandas.DataFrame) of transaction records. Each
         row should represent a single income/expense with information about the
         value of the transaction, and date of the transaction
         Example :
@@ -497,13 +500,13 @@ def create_transaction_objects(transactions_dataframe,
                 2    5/20/2019  37.3   Transfer
                 }
 
-    value_col : (str) denotating which column the value of the transaction is
+    value_col: (str) denotating which column the value of the transaction is
         in. Above the value column is named 'Amount'
-    date_col : (str) denotating which column the date of the transaction is in.
+    date_col: (str) denotating which column the date of the transaction is in.
         Above the date column is named 'Date'
     outputs
     --------
-    transactions : (list) of Income objects for each transaction (row) in
+    transactions: (list) of Income objects for each transaction (row) in
         transactions_dataframe
     """
     incomes = []
@@ -539,15 +542,15 @@ def categorize_transactions(transaction_dataframe,
     data.
     inputs
     -------
-    transaction_dataframe : (pd.DataFrame)
-    cat_col : (str)
-    date_col : (str)
-    value_col : (str)
-    by_year : (bool)
+    transaction_dataframe: (pd.DataFrame)
+    cat_col: (str)
+    date_col: (str)
+    value_col: (str)
+    by_year: (bool)
     Returns
     -------
-    categories : (dict) of category : expense/year
-    categories_year : (dict) of category : expense/year.  This is not
+    categories: (dict) of category: expense/year
+    categories_year: (dict) of category: expense/year.  This is not
         averaged across the whold data period = returns a category for each
         year
     """
