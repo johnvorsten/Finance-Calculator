@@ -1,20 +1,23 @@
+""""""
+# Python imports
 
-
-
-
-
+# Third party imports
 import matplotlib as mpl
 import numpy as np
 from scipy.misc import comb
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+# Local imports
 
+# Declarations
+
+#%%
 def bernstein_poly(i, n, t):
     return comb(n, i) * (t**(n - i)) * (1 - t)**i
 
 
-def bezier_curve(points, nTimes=1000):
+def generate_points_bezier_curve(points, nTimes=1000):
     nPoints = len(points)
     xPoints = np.array([p[0] for p in points])
     yPoints = np.array([p[1] for p in points])
@@ -31,8 +34,7 @@ def bezier_curve(points, nTimes=1000):
 
     return xvals, yvals, zvals
 
-
-if __name__ == "__main__":
+def plot_points_bezier_curve():
     nPoints = 4
     points = np.random.rand(nPoints, 3) * 200
     xpoints = [p[0] for p in points]
@@ -49,3 +51,7 @@ if __name__ == "__main__":
         ax.text(points[nr][0], points[nr][1], points[nr][2], nr)
 
     plt.show()
+    return None
+
+if __name__ == "__main__":
+    plot_points_bezier_curve()

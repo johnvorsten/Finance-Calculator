@@ -4,15 +4,23 @@ Created on Mon Jun 10 13:13:29 2019
 
 @author: z003vrzk
 """
+
+# Python imports
+from math import factorial
+
+# Third party imports
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 from scipy import interpolate
 from datetime import date, timedelta, datetime
-from math import factorial
 
+# Local imports
 
+# Declarations
+
+#%%
 
 time_start = date(2016, 9, 28)
 time_end = date(2019, 6, 5)
@@ -124,20 +132,6 @@ for angle in range(100,125):
     plt.pause(0.003)
 
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def bernstein_poly(i, n, t):
